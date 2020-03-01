@@ -1,17 +1,16 @@
 <template>
   <div class="right-menu-wrapper">
     <div class="avatar-wrapper">
-      <el-dropdown>
+      <el-dropdown trigger="click">
         <span class="el-dropdown-link">
-          <img
-            class="avatar"
-            src="http://img3.imgtn.bdimg.com/it/u=3770990833,1013306388&fm=26&gp=0.jpg"
-          />
+          <el-avatar icon="el-icon-user-solid" class="avatar" :key="userInfo.avatar" :src="userInfo.avatar"></el-avatar>
           <i class="el-icon-caret-bottom el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>个人中心</el-dropdown-item>
-          <el-dropdown-item divided>退出登录</el-dropdown-item>
+          <router-link to="/profile/index">
+            <el-dropdown-item>个人中心</el-dropdown-item>
+          </router-link>
+          <el-dropdown-item @click.native="logout" divided>退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -19,7 +18,29 @@
 </template>
 
 <script>
-export default {}
+import { mapGetters, mapActions } from 'vuex'
+export default {
+  computed: {
+    ...mapGetters('user', {
+      userInfo: 'userInfo'
+    })
+  },
+  methods: {
+    ...mapActions('user', {
+      logoutAction: 'logout'
+    }),
+    logout() {
+      this.$confirm('您确定要退出系统吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        await this.logoutAction()
+        this.$router.push('/login')
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

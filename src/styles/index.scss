@@ -10,11 +10,16 @@ body {
   height: 100%;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
-    Microsoft YaHei, Arial, sans-serif;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  a {
+    text-decoration: none;
+    color: initial;
+  }
 }
 #app {
   height: 100%;
-  font-size: 0;
   outline: none;
+  :focus {
+    outline: none;
+  }
 }

@@ -1,13 +1,15 @@
 <template>
   <div class="sidebar-wrapper">
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <el-menu
-        default-active="2"
-        class="el-menu-vertical-demo"
-        background-color="#354A5E"
-        text-color="#e9f1f6"
-        active-text-color="#ffffff"
-      >
+      <el-menu default-active="2" class="el-menu-vertical-demo" background-color="#354A5E" text-color="#e9f1f6" active-text-color="#ffffff">
+        <template v-for="item in menus">
+          <router-link :to="item.path" :key="item.path">
+            <el-menu-item v-if="item.children && item.children.length === 1" :index="item.path">
+              <i class="el-icon-menu"></i>
+              <span slot="title">{{item.children[0].meta.title}}</span>
+            </el-menu-item>
+          </router-link>
+        </template>
         <el-submenu index="1">
           <template slot="title">
             <i class="el-icon-location"></i>
@@ -52,7 +54,17 @@
 </template>
 
 <script>
-export default {}
+import routes from '@/router/baseRoutes'
+export default {
+  data() {
+    return {
+      menus: routes.filter(a => !a.hidden)
+    }
+  },
+  mounted() {
+    console.log('this.menus', this.menus)
+  }
+}
 </script>
 
 <style>

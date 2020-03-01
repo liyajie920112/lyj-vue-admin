@@ -1,5 +1,5 @@
 <template>
-  <span class="left-panel-ctrl el-icon-menu"></span>
+  <span class="left-panel-ctrl el-icon-s-fold"></span>
 </template>
 
 <script>
