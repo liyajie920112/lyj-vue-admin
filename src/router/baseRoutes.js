@@ -58,7 +58,10 @@ const routes = [{
   children: [{
     path: 'index',
     name: 'Profile',
-    component: () => import(/* webpackChunkName: "profile" */ '../views/profile/index.vue')
+    component: () => import(/* webpackChunkName: "profile" */ '../views/profile/index.vue'),
+    meta: {
+      title: '个人中心'
+    }
   }]
 }]
 

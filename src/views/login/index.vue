@@ -76,9 +76,9 @@ export default {
     left: 50%;
     top: 50%;
     transform: translate3d(-50%, -50%, 0);
-    width: 40%;
+    width: 300px;
     border-radius: 2px;
-    padding: 10px;
+    padding: 10px 30px;
     box-shadow: 0 0 3px #999;
     .login-title {
       text-align: center;

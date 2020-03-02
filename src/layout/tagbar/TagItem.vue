@@ -1,7 +1,11 @@
 <template>
-  <span class="tag-item active">文章管理<i class="el-icon-close"></i></span>
+  <span class="tag-item active">{{ title }}<i class="el-icon-close"></i></span>
 </template>
 
 <script>
-export default {}
+export default {
+  props: {
+    title: String
+  }
+}
 </script>
