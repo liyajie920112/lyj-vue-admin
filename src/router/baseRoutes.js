@@ -34,12 +34,22 @@ const routes = [{
   name: 'Layout',
   redirect: '/exam/index',
   component: Layout,
+  meta: {
+    title: '考试管理'
+  },
   children: [{
     path: 'index',
     name: 'Exam',
     component: () => import(/* webpackChunkName: "exam" */ '../views/exam/index.vue'),
     meta: {
       title: '考试管理'
+    }
+  }, {
+    path: 'question',
+    name: 'Question',
+    component: () => import(/* webpackChunkName: "question" */ '../views/question/index.vue'),
+    meta: {
+      title: '题库管理'
     }
   }]
 },

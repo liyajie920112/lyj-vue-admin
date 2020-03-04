@@ -30,6 +30,8 @@ export default {
       this.addViews(this.$route)
       return false
     },
+    initTab() {
+    },
     removeTab(route) {
       // 关闭tab, 如果是当前的view, 则在关闭之后需要跳转到最后一个view
       this.removeView(route).then(({ views }) => {
@@ -42,6 +44,7 @@ export default {
   },
   mounted() {
     this.addTab()
+    this.initTab()
   }
 }
 </script>
