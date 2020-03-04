@@ -10,7 +10,8 @@ const routes = [{
     name: 'Dashboard',
     component: () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue'),
     meta: {
-      title: '首页'
+      title: '首页',
+      noClose: true
     }
   }]
 },

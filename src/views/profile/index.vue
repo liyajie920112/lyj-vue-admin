@@ -39,6 +39,7 @@
 import { updateUserPwd, updateUser, uploadAvatar } from '@/api/user'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
+  name: 'Profile',
   created() {
     this.user.name = this.userInfo.name
     this.user.avatar = this.userInfo.avatar
