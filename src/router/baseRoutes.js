@@ -45,6 +45,39 @@ const routes = [{
       title: '考试管理'
     }
   }]
+}, {
+  path: '/role',
+  name: 'Layout',
+  redirect: '/role/index',
+  component: Layout,
+  meta: {
+    title: '角色管理'
+  },
+  children: [{
+    path: 'index',
+    name: 'Role',
+    component: () => import(/* webpackChunkName: "exam" */ '../views/role/index.vue'),
+    meta: {
+      title: '角色管理'
+    }
+  }]
+},
+{
+  path: '/promission',
+  name: 'Layout',
+  redirect: '/promission/index',
+  component: Layout,
+  meta: {
+    title: '权限管理'
+  },
+  children: [{
+    path: 'index',
+    name: 'Promission',
+    component: () => import(/* webpackChunkName: "exam" */ '../views/promission/index.vue'),
+    meta: {
+      title: '权限管理'
+    }
+  }]
 },
 {
   path: '/login',

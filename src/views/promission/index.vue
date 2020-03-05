@@ -1,11 +1,15 @@
 <template>
-  <div class="dashboard-wrapper">
-    dashboard
+  <div class="promission-wrapper">
+    promission
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Dashboard'
+
 }
 </script>
+
+<style>
+
+</style>
