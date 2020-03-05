@@ -44,13 +44,6 @@ const routes = [{
     meta: {
       title: '考试管理'
     }
-  }, {
-    path: 'question',
-    name: 'Question',
-    component: () => import(/* webpackChunkName: "question" */ '../views/question/index.vue'),
-    meta: {
-      title: '题库管理'
-    }
   }]
 },
 {

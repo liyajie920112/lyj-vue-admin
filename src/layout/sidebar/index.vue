@@ -14,7 +14,7 @@
               <i class="el-icon-location"></i>
               <span>{{item.meta.title}}</span>
             </template>
-            <router-link v-for="_item in item.children" :key="item.path + '/' + _item.path" :to="_item.path">
+            <router-link v-for="_item in item.children" :key="item.path + '/' + _item.path" :to="fullpath(item, _item)">
               <el-menu-item :index="item.path + '/' + _item.path">{{_item.meta.title}}</el-menu-item>
             </router-link>
           </el-submenu>
@@ -30,6 +30,11 @@ export default {
   data() {
     return {
       menus: routes.filter(a => !a.hidden)
+    }
+  },
+  methods: {
+    fullpath(parent, child) {
+      return `${parent.path}/${child.path}`
     }
   },
   mounted() {

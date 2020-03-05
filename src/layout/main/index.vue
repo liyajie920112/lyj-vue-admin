@@ -17,9 +17,6 @@ export default {
     key() {
       return this.$route.path
     }
-  },
-  mounted() {
-    console.log('{{cachedViews}}', this.cachedViews)
   }
 }
 </script>
