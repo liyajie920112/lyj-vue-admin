@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
-import { getToken, removeToken } from './token'
+import { getToken, removeToken, setToken } from './token'
 import store from '@/store'
 
 const service = axios.create({
@@ -44,6 +44,10 @@ service.interceptors.response.use(response => {
     return Promise.reject(new Error(res.message || res.msg || 'Error'))
   } else { // 成功的时候
     console.log('res--', res)
+    if (res.newToken) { // 如果有新token, 则需要重置token
+      store.commit('user/SET_TOKEN', res.newToken)
+      setToken(res.newToken)
+    }
     return res
   }
 }, error => {
