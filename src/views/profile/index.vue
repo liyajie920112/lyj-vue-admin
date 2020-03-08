@@ -92,7 +92,6 @@ export default {
       setAvatar: 'SET_AVATAR'
     }),
     modify() {
-      alert('11')
       updateUser({ nickname: this.user.name }).then(res => {
         this.$message.success(res.msg || '修改成功')
         // 重新查询用户信息
