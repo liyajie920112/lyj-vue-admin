@@ -19,7 +19,7 @@
         <el-table-column prop="roledesc" label="角色描述"></el-table-column>
         <el-table-column label="操作" width="150" fixed="right">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="editPromission(scope.row.id)">配置权限</el-button>
+            <el-button size="mini" type="text" @click="editPromission(scope.row)">配置权限</el-button>
             <el-button size="mini" type="text" @click="editRole(scope.row)">修改</el-button>
             <el-button size="mini" type="text" @click="deleteRole(scope.row.id)">删除</el-button>
           </template>
@@ -43,13 +43,21 @@
         <el-button type="primary" @click="saveOrUpdateRole('form-role')">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="配置权限" @opened="dialogOpened" :visible.sync="dialogVisible">
+      <el-tree node-key="id" ref="promissionTree" :props="props" :data="promissionData" show-checkbox></el-tree>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveOrUpdatePromise">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { createRole, getRoles, deleteRoleById } from '@/api/role'
+import { createRole, getRoles, deleteRoleById, updateRolePromission } from '@/api/role'
 import FormWrapper from '@/components/form-wrapper'
 import ContentWrapper from '@/components/content-wrapper'
+import { getPromissions } from '../../api/promission'
 export default {
   components: {
     FormWrapper,
@@ -58,7 +66,14 @@ export default {
   data() {
     return {
       dialogRoleVisible: false,
+      dialogVisible: false,
       formLabelWidth: '80px',
+      props: {
+        label: 'promissionName',
+        children: 'children'
+      },
+      promissionData: [],
+      curRole: {},
       formRole: {
         rolename: ''
       },
@@ -76,7 +91,6 @@ export default {
           }
         },
         model: {
-          id: '',
           rolename: '',
           rolevalue: '',
           roledesc: ''
@@ -95,8 +109,10 @@ export default {
   },
   methods: {
     search() {},
-    editPromission(id) {
+    editPromission(role) {
+      this.curRole = role
       // 配置权限
+      this.dialogVisible = true
     },
     editRole(role) {
       for (const key in this.formRoleAdd.model) {
@@ -150,6 +166,44 @@ export default {
         rolevalue: '',
         roledesc: ''
       }
+    },
+    async dialogOpened() {
+      // 请求权限列表
+      const r = await getPromissions()
+      this.promissionData = r.data
+      // 设置选中的key
+      const keys = []
+      const pvs = this.curRole.rolePromissions.split(',')
+      r.data.forEach(item => {
+        if (pvs[item.promissionPos] && (parseInt(pvs[item.promissionPos]) & parseInt(item.promissionValue))) {
+          keys.push(item.id)
+        }
+      })
+      console.log('keys', keys)
+      this.$refs.promissionTree.setCheckedKeys(keys)
+      console.log('this.currole', this.curRole)
+      console.log('r', r)
+    },
+    async saveOrUpdatePromise() {
+      // 获取选中的节点
+      const nodes = this.$refs.promissionTree.getCheckedNodes()
+      const pvs = []
+      nodes.forEach(item => {
+        if (pvs.length === 0) {
+          pvs.push(item.promissionValue)
+        } else {
+          pvs[item.promissionPos] = pvs[item.promissionPos] | item.promissionValue
+        }
+      })
+      // 更新角色id
+      const r = await updateRolePromission({
+        id: this.curRole.id,
+        rolePromissions: pvs.join(',')
+      })
+      this.getRoleList()
+      console.log('r', r)
+      this.dialogVisible = false
+      this.$message.success(r.msg)
     }
   }
 }

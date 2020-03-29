@@ -16,6 +16,31 @@ const routes = [{
   }]
 },
 {
+  path: '/blog',
+  name: 'Layout',
+  redirect: '/blog/index',
+  component: Layout,
+  meta: {
+    title: '博客管理'
+  },
+  children: [{
+    path: 'index',
+    name: 'Blog',
+    component: () => import(/* webpackChunkName: "blog" */ '../views/blog/index.vue'),
+    meta: {
+      title: '博客列表',
+      noCache: true
+    }
+  }, {
+    path: 'detail',
+    name: 'BlogDetail',
+    component: () => import(/* webpackChunkName: "blog-detail" */ '../views/blog/detail.vue'),
+    meta: {
+      title: '博客编辑'
+    }
+  }]
+},
+{
   path: '/question',
   name: 'Layout',
   redirect: '/question/index',

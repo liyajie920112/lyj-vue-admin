@@ -2,21 +2,30 @@
   <div :class="promissionConfig.classNamePre + '-wrapper'">
     <form-wrapper>
       <el-form :inline="true" :model="searchModel" class="demo-form-inline">
-        <el-form-item :label="item.label" v-for="item in promissionConfig.searchModels" :key="item.prop">
-          <el-input :type="item.type" v-model="searchModel[item.prop]" :placeholder="item.placeholder"></el-input>
+        <el-form-item
+          :label="item.label"
+          v-for="item in promissionConfig.searchModels"
+          :key="item.prop"
+        >
+          <el-input
+            :type="item.type"
+            v-model="searchModel[item.prop]"
+            :placeholder="item.placeholder"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" circle @click="search"></el-button>
-          <el-button type="primary" icon="el-icon-plus" circle @click="dialogRoleVisible = true"></el-button>
+          <el-button type="primary" icon="el-icon-plus" circle @click="dialogVisible = true"></el-button>
         </el-form-item>
       </el-form>
     </form-wrapper>
     <content-wrapper>
       <el-table :data="tableData" style="width: 100%">
         <el-table-column type="index" label="序号" width="60"></el-table-column>
-        <el-table-column prop="rolename" label="角色名称" width="180"></el-table-column>
-        <el-table-column prop="rolevalue" label="角色值" width="180"></el-table-column>
-        <el-table-column prop="roledesc" label="角色描述"></el-table-column>
+        <el-table-column prop="promissionName" label="权限名称" width="180"></el-table-column>
+        <el-table-column prop="url" label="权限url" width="180"></el-table-column>
+        <el-table-column prop="promissionPos" label="权限位"></el-table-column>
+        <el-table-column prop="promissionValue" label="权限码"></el-table-column>
         <el-table-column label="操作" width="150" fixed="right">
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="editPromission(scope.row.id)">配置权限</el-button>
@@ -26,21 +35,25 @@
         </el-table-column>
       </el-table>
     </content-wrapper>
-    <el-dialog @closed="dialogClosed" :title="title" :visible.sync="dialogRoleVisible">
-      <el-form ref="form-role" :model="formRoleAdd.model" :rules="formRoleAdd.formRoleAddRules">
-        <el-form-item label="角色名称" :label-width="formLabelWidth" prop="rolename">
-          <el-input v-model="formRoleAdd.model.rolename" autocomplete="off"></el-input>
+    <el-dialog @closed="dialogClosed" :title="title" :visible.sync="dialogVisible">
+      <el-form
+        :ref="promissionConfig.formRef"
+        :model="promissionConfig.editModel"
+        :rules="promissionConfig.editModelRules"
+      >
+        <el-form-item label="父权限" :label-width="formLabelWidth" prop="rolename">
+          <el-input v-model="promissionConfig.editModel.parentId" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="角色值" :label-width="formLabelWidth" prop="rolevalue">
-          <el-input v-model="formRoleAdd.model.rolevalue" autocomplete="off"></el-input>
+        <el-form-item label="权限名称" :label-width="formLabelWidth" prop="promissionName">
+          <el-input v-model="promissionConfig.editModel.promissionName" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="角色描述" :label-width="formLabelWidth">
-          <el-input v-model="formRoleAdd.model.roledesc" autocomplete="off"></el-input>
+        <el-form-item label="权限url" :label-width="formLabelWidth" prop="url">
+          <el-input v-model="promissionConfig.editModel.url" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogRoleVisible = false">取 消</el-button>
-        <el-button type="primary" @click="saveOrUpdateRole('form-role')">确 定</el-button>
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveOrUpdateRole(promissionConfig.formRef)">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -48,7 +61,11 @@
 
 <script>
 import { promissionConfig, searchModelsToModel } from '@/utils/classConfig'
-import { createRole, getRoles, deleteRoleById } from '@/api/role'
+import {
+  createPromission,
+  deletePromissionById,
+  getPromissions
+} from '@/api/promission'
 import FormWrapper from '@/components/form-wrapper'
 import ContentWrapper from '@/components/content-wrapper'
 export default {
@@ -61,7 +78,7 @@ export default {
     return {
       promissionConfig,
       searchModel: searchModelsToModel(promissionConfig.searchModels),
-      dialogRoleVisible: false,
+      dialogVisible: false,
       formLabelWidth: '80px',
       formRole: {
         rolename: ''
@@ -90,7 +107,7 @@ export default {
     }
   },
   created() {
-    this.getRoleList()
+    this.getList()
   },
   computed: {
     title() {
@@ -107,7 +124,7 @@ export default {
         this.formRoleAdd.model[key] = role[key]
       }
       this.formRoleAdd.model.id = role.id
-      this.dialogRoleVisible = true
+      this.dialogVisible = true
     },
     deleteRole(id) {
       this.$confirm('你确定要删除改角色吗?', '提示', {
@@ -117,7 +134,7 @@ export default {
       })
         .then(() => {
           // 发送请求
-          deleteRoleById({ id }).then(r => {
+          deletePromissionById({ id }).then(r => {
             this.$message.success(r.msg || '删除成功')
             this.getRoleList()
           })
@@ -129,30 +146,29 @@ export default {
     saveOrUpdateRole(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          createRole(this.formRoleAdd.model).then(res => {
+          createPromission(this.promissionConfig.editModel).then(res => {
             this.$message.success(res.msg || '创建成功')
-            this.dialogRoleVisible = false
-            this.getRoleList()
+            this.dialogVisible = false
+            this.getList()
           })
         } else {
           return false
         }
       })
     },
-    async getRoleList() {
-      const res = await getRoles({})
+    async getList() {
+      const res = await getPromissions({})
       this.tableData = res.data
     },
     dialogClosed() {
-      this.resetForm('form-role')
+      this.resetForm(this.promissionConfig.formRef)
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
-      this.formRoleAdd.model = {
-        id: '',
-        rolename: '',
-        rolevalue: '',
-        roledesc: ''
+      this.promissionConfig.editModel = {
+        parentId: '',
+        promissionName: '',
+        url: ''
       }
     }
   }

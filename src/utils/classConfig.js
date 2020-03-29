@@ -1,5 +1,6 @@
 export const promissionConfig = {
   classNamePre: 'promission',
+  formRef: 'form-promission',
   searchModels: [{
     prop: 'permissionName',
     value: '',
@@ -8,11 +9,12 @@ export const promissionConfig = {
     type: 'text'
   }],
   editModel: {
-    permissionName: '',
+    parentId: '',
+    promissionName: '',
     url: ''
   },
-  editModelRules: [{
-    permissionName: {
+  editModelRules: {
+    promissionName: {
       required: true,
       message: '请输入权限名称',
       trigger: 'blur'
@@ -22,6 +24,17 @@ export const promissionConfig = {
       message: '请输入权限地址',
       trigger: 'blur'
     }
+  }
+}
+export const blogConfig = {
+  classNamePre: 'blog',
+  formRef: 'form-blog',
+  searchModels: [{
+    prop: 'title',
+    value: '',
+    label: '博客标题',
+    placeholder: '请输入博客标题',
+    type: 'text'
   }]
 }
 

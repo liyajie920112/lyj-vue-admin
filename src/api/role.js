@@ -35,3 +35,15 @@ export const deleteRoleById = (params) => {
     data: params
   })
 }
+
+/**
+ * 获取角色列表
+ * @param {参数} params
+ */
+export const updateRolePromission = (params) => {
+  return http({
+    url: '/role/updateRolePromission',
+    method: 'post',
+    data: params
+  })
+}
